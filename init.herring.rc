@@ -7,14 +7,8 @@ on boot
     setprop ro.product.device herring
     setprop ro.bt.bdaddr_path "/efs/bluetooth/bt_addr"
 
-# fake some battery state
-    setprop status.battery.state Slow
-    setprop status.battery.level 5
-    setprop status.battery.level_raw  50
-    setprop status.battery.level_scale 9
-
 # phone
-    setprop ro.telephony.call_ring.multiple 0
+    setprop ro.telephony.call_ring.multiple false
 
 # change permission for uart_switch
     chown radio radio /sys/class/sec/uart_switch/UART_SEL/value
@@ -156,55 +150,46 @@ service pvrsrvinit /system/vendor/bin/pvrsrvinit
 service wpa_supplicant /system/bin/wpa_supplicant -iwlan0 -Dnl80211 -c/data/misc/wifi/wpa_supplicant.conf -e/data/misc/wifi/entropy.bin
     class main
     socket wpa_wlan0 dgram 0660 wifi wifi
-    disabled
     oneshot
 
 # DHCPCD
 # wi-fi
 service dhcpcd_wlan0 /system/bin/dhcpcd -aABDKL
     class main
-    disabled
     oneshot
 
 # wimax
 service dhcpcd_uwbr0 /system/bin/dhcpcd -ABDKL
     class main
-    disabled
     oneshot
 
 # bluetooth
 service dhcpcd_bt-pan /system/bin/dhcpcd -ABKL
     class main
-    disabled
     oneshot
 
 # IP Renew
 # wi-fi
 service iprenew_wlan0 /system/bin/dhcpcd -n
     class main
-    disabled
     oneshot
 
 # wimax
 service iprenew_uwbr0 /system/bin/dhcpcd -n
     class main
-    disabled
     oneshot
 
 # bluetooth
 service iprenew_bt-pan /system/bin/dhcpcd -n
     class main
-    disabled
     oneshot
 
 # bugreport is triggered by holding down volume down, volume up and power
-#service bugreport /system/bin/bugmailer.sh -v
-#    class main
-#    disabled
-#    oneshot
-#    keycodes 114 115 116
+service bugreport /system/bin/bugmailer.sh -v
+      class main
+     oneshot
+     keycodes 114 115 116
 
 service wimax_route /system/bin/route add default dev uwbr0
     class main
-    disabled
     oneshot
